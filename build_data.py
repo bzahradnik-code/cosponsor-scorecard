@@ -67,11 +67,11 @@ def party(p):
 members = {}
 
 
-def ensure(bioguide, name="", pty="", state="", chamber="House"):
+def ensure(bioguide, name="", pty="", state="", chamber="House", photo=""):
     if bioguide not in members:
         members[bioguide] = {"id": bioguide, "name": name, "party": party(pty),
                              "state": STATES.get(state, state), "chamber": chamber,
-                             "supported": [], "sponsored": []}
+                             "supported": [], "sponsored": [], "photo": photo}
     return members[bioguide]
 
 
@@ -81,7 +81,8 @@ for m in get_all(f"{BASE}/member/congress/{CONGRESS}", "members", {"currentMembe
     last = max(terms, key=lambda t: t.get("startYear", 0))
     ch = "Senate" if "Senate" in last.get("chamber", "") else "House"
     ensure(m["bioguideId"], flip(m.get("name", "")), m.get("partyName", ""),
-           m.get("state", ""), ch)
+           m.get("state", ""), ch,
+           (m.get("depiction") or {}).get("imageUrl", ""))
 
 bills = []
 for t, n in BILLS:
