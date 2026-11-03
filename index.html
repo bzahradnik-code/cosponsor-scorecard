@@ -4,59 +4,75 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cosponsorship Scorecard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f6f7;--panel:#fff;--ink:#17252e;--mute:#5c6b74;--line:#d9e0e4;--accent:#0b6b6f;--bar:#d9e8e9;--warn:#fff4d6;--warnink:#5b4300}
-@media (prefers-color-scheme:dark){:root{--bg:#10181d;--panel:#18232a;--ink:#e6edf0;--mute:#9aaab3;--line:#2b3a43;--accent:#4fc3c8;--bar:#25363d;--warn:#3a3012;--warnink:#f1dc9a}}
+:root{--bg:#f3f5f9;--card:#fff;--ink:#141b2d;--mute:#667085;--line:#e4e8f0;--accent:#4f46e5;--tile:#e9edf5;--on:#fff;--sh:0 1px 2px rgba(16,24,40,.06),0 6px 20px rgba(16,24,40,.05)}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1322;--card:#161d30;--ink:#e8ecf6;--mute:#95a0b8;--line:#263050;--accent:#8b8cff;--tile:#202a45;--on:#0e1322;--sh:0 1px 2px rgba(0,0,0,.4)}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
-h1{font:700 2rem/1.15 Georgia,"Iowan Old Style",serif;margin:0 0 4px}
-h2{font:700 1.2rem Georgia,serif;margin:36px 0 8px}
-.sub{color:var(--mute);margin:0 0 16px}
-.sample{background:var(--warn);color:var(--warnink);padding:10px 14px;border-radius:6px;margin-bottom:16px}
-.controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
-input,select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
-input{flex:1 1 200px}
-.wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{background:var(--card);border-bottom:1px solid var(--line)}
+.in{max-width:1120px;margin:0 auto;padding:0 20px}
+.top .in{padding:22px 20px}
+h1{font-size:1.6rem;line-height:1.2;margin:0;letter-spacing:-.02em}
+h2{font-size:1.05rem;margin:0 0 4px}
+.mute,.hint,#meta{color:var(--mute)}
+#meta{margin:2px 0 0}.hint{margin:0 0 14px;font-size:.9rem}
+main{padding-top:20px;padding-bottom:48px}
+.sample{background:#fff4d6;color:#5b4300;padding:10px 14px;border-radius:10px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);padding:20px;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+.stat{font:inherit;color:inherit;text-align:left;cursor:pointer;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--line);border-radius:14px;box-shadow:var(--sh);padding:14px 16px}
+.stat span{display:block;color:var(--mute);font-size:.85rem}.stat b{font-size:1.9rem;letter-spacing:-.02em}
+.stat.act{outline:2px solid var(--accent)}
+.stat.t3{border-top-color:#d6b94c}.stat.t2{border-top-color:#aab4ba}.stat.t1{border-top-color:#c79a6b}
+.g2{display:grid;grid-template-columns:1.7fr 1fr;gap:16px}.g2 .card{margin-bottom:16px}
+.map{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
+.tile{aspect-ratio:1;font:600 .72rem Inter,system-ui,sans-serif;border:0;border-radius:6px;background:var(--tile);color:var(--ink);cursor:pointer;padding:0}
+.tile:hover{transform:scale(1.08)}.tile.sel{outline:3px solid var(--ink);outline-offset:1px}
+.tile.none{opacity:.45;cursor:default}
+.leg{display:flex;align-items:center;gap:8px;margin-top:12px;color:var(--mute);font-size:.8rem}
+.leg i{flex:0 0 120px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--tile),var(--accent))}
+.bl{list-style:none;margin:0;padding:0}
+.bl li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.bl li:last-child{border:0}.bt{font-size:.82rem;color:var(--mute);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.cnt{align-self:center;font-weight:700;background:var(--bg);border-radius:8px;padding:2px 10px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+input,select{font:inherit;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+input{flex:1 1 220px}
+.chipx{font:inherit;cursor:pointer;border:0;border-radius:16px;background:var(--accent);color:var(--on);padding:6px 12px}
+.wrap{overflow-x:auto}
 table{border-collapse:collapse;width:100%;min-width:640px}
-th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
-th{font-weight:600;color:var(--mute);font-size:.9rem}
-tr.m{cursor:pointer}tr.m:hover{background:var(--bg)}
-tr.m:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.score{display:flex;align-items:center;gap:8px;min-width:160px}
-.bar{flex:1;height:10px;background:var(--bar);border-radius:5px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--accent)}
-.pct{font-weight:700;width:3ch;text-align:right}
-.tier{display:inline-block;padding:2px 12px;border-radius:12px;font-weight:700;font-size:.85rem;border:1px solid var(--line);color:var(--mute)}.t3{background:#f3e2a0;color:#5b4300;border-color:#d6b94c}.t2{background:#e1e5e8;color:#2f3b42;border-color:#aab4ba}.t1{background:#ead0b5;color:#5a3512;border-color:#c79a6b}
-.d td{background:var(--bg);color:var(--mute);font-size:.92rem}
-.chip{display:inline-block;margin:2px 6px 2px 0;padding:2px 8px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink)}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mute);font-weight:600}
+tr.m{cursor:pointer}tr.m:hover td{background:var(--bg)}tr.m:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tier{display:inline-block;padding:2px 12px;border-radius:12px;font-weight:600;font-size:.82rem;border:1px solid var(--line);color:var(--mute)}
+.t3.tier{background:#f3e2a0;color:#5b4300;border-color:#d6b94c}.t2.tier{background:#e1e5e8;color:#2f3b42;border-color:#aab4ba}.t1.tier{background:#ead0b5;color:#5a3512;border-color:#c79a6b}
+.dots i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--line);margin-right:3px}.dots i.on{background:var(--accent)}
+.d td{background:var(--bg);color:var(--mute);font-size:.9rem}
+.chip{display:inline-block;margin:2px 6px 2px 0;padding:2px 10px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
 .chip.y{border-color:var(--accent)}.chip.n{color:var(--mute)}
-.note{color:var(--mute);font-size:.92rem}
-ul.b{padding-left:18px}
+.rub{max-width:420px;min-width:0}
+@media (max-width:860px){.g2{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.tile{font-size:.6rem;border-radius:4px}}
 </style>
 </head>
 <body>
-<main>
-<h1>Cosponsorship Scorecard</h1>
-<p class="sub" id="meta"></p>
+<header class="top"><div class="in"><h1>Cosponsorship Scorecard</h1><p id="meta"></p></div></header>
+<main class="in">
 <div class="sample" id="sample" hidden><strong>Sample data.</strong> These names and numbers are made up. Run <code>build_data.py</code> to create <code>data.js</code> with real Congress.gov data, then reload this page.</div>
-<div class="controls">
-<input id="q" type="search" placeholder="Search by name or state" aria-label="Search members">
-<select id="ch" aria-label="Chamber"><option value="">Both chambers</option><option>House</option><option>Senate</option></select>
-<select id="pa" aria-label="Party"><option value="">All parties</option></select>
-<select id="ti" aria-label="Tier"><option value="">All tiers</option><option value="3">Gold</option><option value="2">Silver</option><option value="1">Bronze</option><option value="0">No tier</option></select>
-<select id="so" aria-label="Sort by"><option value="score">Sort: rating</option><option value="name">Sort: name</option><option value="state">Sort: state</option></select>
+<section class="stats" id="stats" aria-label="Members by tier"></section>
+<div class="g2">
+<section class="card"><h2>Tiers by state</h2><p class="hint">Click a state to filter the member list. Darker shading means a higher average tier among that state’s members.</p><div class="map" id="map"></div><div class="leg">Lower<i></i>Higher</div></section>
+<section class="card"><h2>Bills tracked</h2><p class="hint">Number shows members who sponsor or cosponsor.</p><ul class="bl" id="bills"></ul></section>
 </div>
-<p class="note" id="count"></p>
-<div class="wrap"><table>
-<thead><tr><th>Member</th><th>Party</th><th>State</th><th>Chamber</th><th>Rating</th><th>Bills</th></tr></thead>
-<tbody id="rows"></tbody></table></div>
-<p class="note">Select a member to see which bills they sponsored or cosponsored.</p>
-<h2>How ratings work</h2>
-<p>Each member earns a tier based on how many of the tracked bills in their own chamber they sponsor or currently cosponsor. Members can’t cosponsor bills from the other chamber, so House and Senate use different thresholds. Cosponsors who withdrew their names aren’t counted.</p>
-<table style="min-width:0;max-width:420px;background:var(--panel);border:1px solid var(--line)"><thead><tr><th>Tier</th><th>House</th><th>Senate</th></tr></thead><tbody><tr><td>Gold</td><td>6+ bills</td><td>4+ bills</td></tr><tr><td>Silver</td><td>4–5 bills</td><td>3 bills</td></tr><tr><td>Bronze</td><td>1–3 bills</td><td>1–2 bills</td></tr></tbody></table>
-<p class="note">Tiers reflect only the bills listed below, so they say nothing about a member’s other work.</p>
-<ul class="b" id="bills"></ul>
+<section class="card">
+<h2>Members</h2><p class="hint">Select a member to see which bills they back.</p>
+<div class="ctl"><input id="q" type="search" placeholder="Search by name or state" aria-label="Search members"><select id="ch" aria-label="Chamber"><option value="">Both chambers</option><option>House</option><option>Senate</option></select><select id="pa" aria-label="Party"><option value="">All parties</option></select><select id="so" aria-label="Sort by"><option value="score">Sort: tier</option><option value="name">Sort: name</option><option value="state">Sort: state</option></select><span id="chip"></span></div>
+<p class="mute" id="count" style="margin:0 0 8px"></p>
+<div class="wrap"><table><thead><tr><th>Member</th><th>Party</th><th>State</th><th>Chamber</th><th>Tier</th><th>Bills</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+<section class="card"><h2>How tiers work</h2>
+<p>Each member earns a tier based on how many of the tracked bills in their own chamber they sponsor or currently cosponsor. Members can’t cosponsor bills from the other chamber, so the House and Senate use different thresholds. Cosponsors who withdrew their names aren’t counted. Tiers reflect only the bills listed above, so they say nothing about a member’s other work.</p>
+<table class="rub"><thead><tr><th>Tier</th><th>House</th><th>Senate</th></tr></thead><tbody><tr><td>Gold</td><td>6+ bills</td><td>4+ bills</td></tr><tr><td>Silver</td><td>4–5 bills</td><td>3 bills</td></tr><tr><td>Bronze</td><td>1–3 bills</td><td>1–2 bills</td></tr></tbody></table></section>
 </main>
 <script src="data.js"></script>
 <script>
@@ -65,7 +81,7 @@ function sample(){
   var m=[];for(var i=0;i<10;i++){var c=i<6?"House":"Senate";m.push({id:"X"+i,name:"Sample Member "+(i+1),party:["D","R","I"][i%3],state:["MD","TX","OH","CA","VT","FL"][i%6],chamber:c,sponsored:[],supported:b.filter(function(x,j){return x.chamber==c&&(i+j)%3}).map(function(x){return x.id})})}
   return{congress:119,generated:null,bills:b,members:m};
 }
-var D=window.CONGRESS_DATA||sample(), $=function(i){return document.getElementById(i)}, open={};
+var D=window.CONGRESS_DATA||sample(),$=function(i){return document.getElementById(i)},ex={},st="",tf="";
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 if(!window.CONGRESS_DATA)$("sample").hidden=false;
 $("meta").textContent=D.congress+"th Congress · "+D.bills.length+" bills tracked"+(D.generated?" · data pulled "+D.generated+" from Congress.gov":"");
@@ -73,25 +89,43 @@ var TIERS={House:{gold:6,silver:4,bronze:1},Senate:{gold:4,silver:3,bronze:1}},T
 D.members.forEach(function(m){
   m.el=D.bills.filter(function(b){return b.chamber===m.chamber});
   m.n=m.el.filter(function(b){return m.supported.indexOf(b.id)>-1}).length;
-  var t=TIERS[m.chamber];
-  m.tier=m.n>=t.gold?3:m.n>=t.silver?2:m.n>=t.bronze?1:0;
+  var t=TIERS[m.chamber];m.tier=m.n>=t.gold?3:m.n>=t.silver?2:m.n>=t.bronze?1:0;
 });
+var TILES="AK:0:0 ME:11:0 VT:10:1 NH:11:1 WA:1:2 ID:2:2 MT:3:2 ND:4:2 MN:5:2 IL:6:2 WI:7:2 MI:8:2 NY:9:2 RI:10:2 MA:11:2 OR:1:3 NV:2:3 WY:3:3 SD:4:3 IA:5:3 IN:6:3 OH:7:3 PA:8:3 NJ:9:3 CT:10:3 CA:1:4 UT:2:4 CO:3:4 NE:4:4 MO:5:4 KY:6:4 WV:7:4 VA:8:4 MD:9:4 DE:10:4 AZ:2:5 NM:3:5 KS:4:5 AR:5:5 TN:6:5 NC:7:5 SC:8:5 DC:9:5 OK:4:6 LA:5:6 MS:6:6 AL:7:6 GA:8:6 HI:0:7 TX:4:7 FL:9:7 PR:6:8 VI:7:8 GU:8:8 AS:9:8 MP:10:8".split(" ");
 Array.from(new Set(D.members.map(function(m){return m.party}))).sort().forEach(function(p){var o=document.createElement("option");o.textContent=p;$("pa").appendChild(o)});
-$("bills").innerHTML=D.bills.map(function(b){return"<li><strong>"+esc(b.label)+"</strong> ("+b.chamber+")"+(b.title?": "+esc(b.title):"")+"</li>"}).join("");
+$("bills").innerHTML=D.bills.map(function(b){var n=D.members.filter(function(m){return m.supported.indexOf(b.id)>-1}).length;return'<li><div><strong>'+esc(b.label)+'</strong> <span class="mute">'+b.chamber+'</span><div class="bt">'+esc(b.title||"")+'</div></div><span class="cnt">'+n+'</span></li>'}).join("");
+function renderStats(){
+  var c=[0,0,0,0];D.members.forEach(function(m){c[m.tier]++});
+  var S=[["","All members",D.members.length],["3","Gold",c[3]],["2","Silver",c[2]],["1","Bronze",c[1]],["0","No tier",c[0]]];
+  $("stats").innerHTML=S.map(function(s){return'<button class="stat'+(s[0]?" t"+s[0]:"")+(tf===s[0]?" act":"")+'" data-t="'+s[0]+'" aria-pressed="'+(tf===s[0])+'"><span>'+s[1]+'</span><b>'+s[2]+'</b></button>'}).join("");
+}
+function renderMap(){
+  $("map").innerHTML=TILES.map(function(t){
+    var p=t.split(":"),a=p[0],ms=D.members.filter(function(m){return m.state===a}),has=ms.length,avg=has?ms.reduce(function(s,m){return s+m.tier},0)/has:0,pc=Math.round(avg/3*100);
+    return'<button class="tile'+(has?"":" none")+(st===a?" sel":"")+'" data-s="'+a+'" aria-pressed="'+(st===a)+'" aria-label="'+a+', '+has+' members" title="'+a+": "+has+" members, average tier "+avg.toFixed(1)+' of 3" style="grid-column:'+(+p[1]+1)+";grid-row:"+(+p[2]+1)+(has?";background:color-mix(in srgb,var(--accent) "+(12+pc*0.88)+"%,var(--tile));color:"+(pc>55?"var(--on)":"var(--ink)"):"")+'">'+a+"</button>"}).join("");
+}
 function render(){
-  var q=$("q").value.toLowerCase(),ch=$("ch").value,pa=$("pa").value,so=$("so").value,ti=$("ti").value;
-  var r=D.members.filter(function(m){return(!ch||m.chamber===ch)&&(!pa||m.party===pa)&&(ti===""||String(m.tier)===ti)&&(!q||(m.name+" "+m.state).toLowerCase().indexOf(q)>-1)});
+  var q=$("q").value.toLowerCase(),ch=$("ch").value,pa=$("pa").value,so=$("so").value;
+  var r=D.members.filter(function(m){return(!ch||m.chamber===ch)&&(!pa||m.party===pa)&&(!st||m.state===st)&&(tf===""||String(m.tier)===tf)&&(!q||(m.name+" "+m.state).toLowerCase().indexOf(q)>-1)});
   r.sort(so==="name"?function(a,b){return a.name.localeCompare(b.name)}:so==="state"?function(a,b){return a.state.localeCompare(b.state)||a.name.localeCompare(b.name)}:function(a,b){return b.tier-a.tier||b.n-a.n||a.name.localeCompare(b.name)});
   $("count").textContent=r.length+" members";
+  $("chip").innerHTML=st?'<button class="chipx" id="clr">'+esc(st)+" ✕</button>":"";
   $("rows").innerHTML=r.map(function(m){
-    var h='<tr class="m" tabindex="0" data-id="'+esc(m.id)+'"><td>'+esc(m.name)+'</td><td>'+esc(m.party)+'</td><td>'+esc(m.state)+'</td><td>'+m.chamber+'</td><td><span class="tier t'+m.tier+'">'+TN[m.tier]+'</span></td><td>'+m.n+' of '+m.el.length+'</td></tr>';
-    if(open[m.id])h+='<tr class="d"><td colspan="6">'+m.el.map(function(b){var s=m.sponsored.indexOf(b.id)>-1,y=m.supported.indexOf(b.id)>-1;return'<span class="chip '+(y?"y":"n")+'">'+esc(b.label)+(s?" (sponsor)":y?" (cosponsor)":" (not on bill)")+'</span>'}).join("")+'</td></tr>';
+    var d="";for(var k=0;k<m.el.length;k++)d+='<i class="'+(k<m.n?"on":"")+'"></i>';
+    var h='<tr class="m" tabindex="0" data-id="'+esc(m.id)+'"><td><strong>'+esc(m.name)+'</strong></td><td>'+esc(m.party)+"</td><td>"+esc(m.state)+"</td><td>"+m.chamber+'</td><td><span class="tier t'+m.tier+'">'+TN[m.tier]+'</span></td><td><span class="dots" title="'+m.n+" of "+m.el.length+'">'+d+"</span> "+m.n+" of "+m.el.length+"</td></tr>";
+    if(ex[m.id])h+='<tr class="d"><td colspan="6">'+m.el.map(function(b){var s=m.sponsored.indexOf(b.id)>-1,y=m.supported.indexOf(b.id)>-1;return'<span class="chip '+(y?"y":"n")+'">'+esc(b.label)+(s?" (sponsor)":y?" (cosponsor)":" (not on bill)")+"</span>"}).join("")+"</td></tr>";
     return h}).join("");
 }
-function tog(e){var t=e.target.closest("tr.m");if(!t)return;if(e.type==="keydown"&&e.key!=="Enter"&&e.key!==" ")return;e.preventDefault();var id=t.dataset.id;open[id]=!open[id];render()}
-$("rows").addEventListener("click",tog);$("rows").addEventListener("keydown",tog);
-["q","ch","pa","ti","so"].forEach(function(i){$(i).addEventListener("input",render)});
-render();
+function all(){renderStats();renderMap();render()}
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-s]");if(t){if(!t.classList.contains("none")){st=st===t.dataset.s?"":t.dataset.s;all()}return}
+  t=e.target.closest("[data-t]");if(t){tf=tf===t.dataset.t?"":t.dataset.t;all();return}
+  if(e.target.closest("#clr")){st="";all();return}
+  t=e.target.closest("tr.m");if(t){ex[t.dataset.id]=!ex[t.dataset.id];render()}
+});
+document.addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("tr.m")){e.preventDefault();e.target.click()}});
+["q","ch","pa","so"].forEach(function(i){$(i).addEventListener("input",render)});
+all();
 </script>
 </body>
 </html>
