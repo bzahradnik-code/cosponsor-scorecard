@@ -6,8 +6,8 @@
 <title>Cosponsorship Scorecard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f3f5f9;--card:#fff;--ink:#141b2d;--mute:#667085;--line:#e4e8f0;--accent:#4f46e5;--tile:#e9edf5;--on:#fff;--sh:0 1px 2px rgba(16,24,40,.06),0 6px 20px rgba(16,24,40,.05)}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1322;--card:#161d30;--ink:#e8ecf6;--mute:#95a0b8;--line:#263050;--accent:#8b8cff;--tile:#202a45;--on:#0e1322;--sh:0 1px 2px rgba(0,0,0,.4)}}
+:root{--navy:#14264b;--accent:#c41e3a;--bg:#f4f5f8;--card:#fff;--ink:#14264b;--mute:#5b6577;--line:#dde1e9;--tile:#e9edf3;--on:#fff;--sh:0 1px 2px rgba(20,38,75,.06)}
+
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
 .top{background:var(--card);border-bottom:1px solid var(--line)}
@@ -69,27 +69,47 @@ tr.m{cursor:pointer}tr.m:hover td{background:var(--bg)}tr.m:focus-visible{outlin
 .bc{display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:10px;font-size:.78rem;border:1px solid var(--line);color:var(--mute)}
 .bc.y{background:var(--accent);color:var(--on);border-color:var(--accent);font-weight:600}
 @media (max-width:860px){.g2{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.tile{font-size:.6rem;border-radius:4px}}
+.hero{background:var(--navy);color:#fff;padding:30px 0 28px;border-bottom:5px solid var(--accent)}
+.hero h1{font-size:2.3rem;letter-spacing:-.02em;margin:0 0 6px}
+.hero .lead{margin:0;color:#cfd8ea;max-width:620px;font-size:1.05rem}
+.hero #meta{color:#9fb0cf;font-size:.85rem;margin:6px 0 0}
+.find{max-width:560px;margin:18px 0 22px}.find input{width:100%;border:0;border-radius:8px;padding:13px 16px;font-size:1rem;color:var(--ink)}
+.hero .stats{margin:0}.hero .stat.act{outline:3px solid #fff;outline-offset:2px}
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--line);margin-bottom:18px;overflow-x:auto}
+.tabs button{font:600 .95rem Inter,system-ui,sans-serif;background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-2px;padding:12px 18px;cursor:pointer;color:var(--mute);white-space:nowrap}
+.tabs button.on{color:var(--navy);border-bottom-color:var(--accent)}
+.card,.stat,.mc{border-radius:8px}.card h2{color:var(--navy)}
+.bc.y{background:var(--navy);border-color:var(--navy);color:#fff}
+.chipx{background:var(--accent);color:#fff}
+.foot{background:var(--navy);color:#cfd8ea;padding:24px 0;font-size:.85rem;border-top:5px solid var(--accent)}
 </style>
 </head>
 <body>
-<header class="top"><div class="in"><h1>Cosponsorship Scorecard</h1><p id="meta"></p></div></header>
+<header class="hero"><div class="in"><h1>Cosponsorship Scorecard</h1><p class="lead">See which members of Congress have cosponsored our tracked bills, and where each one ranks.</p><p id="meta"></p>
+<div class="find"><input id="q" type="search" placeholder="Find your representative: search by name or state" aria-label="Find your representative"></div>
+<section class="stats" id="stats" aria-label="Members by tier"></section></div></header>
 <main class="in">
 <div class="sample" id="sample" hidden><strong>Sample data.</strong> These names and numbers are made up. Run <code>build_data.py</code> to create <code>data.js</code> with real Congress.gov data, then reload this page.</div>
-<section class="stats" id="stats" aria-label="Members by tier"></section>
-<div class="g2">
+<nav class="tabs"><button class="on" data-p="p1">Scorecard</button><button data-p="p2">Bills tracked</button><button data-p="p3">How scoring works</button></nav>
+<div id="p1">
 <section class="card"><h2>Tiers by state</h2><p class="hint">Color shows the highest tier among a state’s members. Hover for counts and click to filter the member list.</p><div id="map"></div><div class="terr" id="terr"></div><div class="leg">Highest tier:<span class="sw t3"></span>Gold<span class="sw t2"></span>Silver<span class="sw t1"></span>Bronze<span class="sw t0"></span>No tier</div></section>
-<section class="card"><h2>Bills tracked</h2><p class="hint">Number shows members who sponsor or cosponsor.</p><ul class="bl" id="bills"></ul></section>
-</div>
 <section class="card">
 <h2>Members</h2><p class="hint">Highlighted bills are ones the member sponsors (★) or cosponsors. Bills that aren’t highlighted are ones they haven’t signed onto.</p>
-<div class="ctl"><input id="q" type="search" placeholder="Search by name or state" aria-label="Search members"><select id="ch" aria-label="Chamber"><option value="">Both chambers</option><option>House</option><option>Senate</option></select><select id="pa" aria-label="Party"><option value="">All parties</option></select><select id="so" aria-label="Sort by"><option value="score">Sort: tier</option><option value="name">Sort: name</option><option value="state">Sort: state</option></select><span id="chip"></span></div>
+<div class="ctl"><select id="sta" aria-label="State"></select><select id="ch" aria-label="Chamber"><option value="">Both chambers</option><option>House</option><option>Senate</option></select><select id="pa" aria-label="Party"><option value="">All parties</option></select><select id="so" aria-label="Sort by"><option value="score">Sort: tier</option><option value="name">Sort: name</option><option value="state">Sort: state</option></select><span id="chip"></span></div>
 <p class="mute" id="count" style="margin:0 0 8px"></p>
 <div class="cards" id="rows"></div><p style="text-align:center"><button class="chipx" id="more" hidden></button></p>
 </section>
+</div>
+<div id="p2" hidden>
+<section class="card"><h2>Bills tracked</h2><p class="hint">Number shows members who sponsor or cosponsor.</p><ul class="bl" id="bills"></ul></section>
+</div>
+<div id="p3" hidden>
 <section class="card"><h2>How tiers work</h2>
 <p>Each member earns a tier based on how many of the tracked bills in their own chamber they sponsor or currently cosponsor. Members can’t cosponsor bills from the other chamber, so the House and Senate use different thresholds. Cosponsors who withdrew their names aren’t counted. Tiers reflect only the bills listed above, so they say nothing about a member’s other work.</p>
 <table class="rub"><thead><tr><th>Tier</th><th>House</th><th>Senate</th></tr></thead><tbody><tr><td>Gold</td><td>6+ bills</td><td>4+ bills</td></tr><tr><td>Silver</td><td>4–5 bills</td><td>3 bills</td></tr><tr><td>Bronze</td><td>1–3 bills</td><td>1–2 bills</td></tr></tbody></table></section>
+</div>
 </main>
+<footer class="foot"><div class="in">Data from Congress.gov. Tiers reflect only the bills listed under “Bills tracked” and are not a measure of a member’s overall record.</div></footer>
 <div class="tip" id="tip" hidden></div>
 <script src="data.js"></script>
 <script>
@@ -141,15 +161,16 @@ function card(m){
 }
 function render(){
   var q=$("q").value.toLowerCase(),ch=$("ch").value,pa=$("pa").value,so=$("so").value;
-  var r=D.members.filter(function(m){return(!ch||m.chamber===ch)&&(!pa||m.party===pa)&&(!st||m.state===st)&&(tf===""||String(m.tier)===tf)&&(!q||(m.name+" "+m.state).toLowerCase().indexOf(q)>-1)});
+  var r=D.members.filter(function(m){return(!ch||m.chamber===ch)&&(!pa||m.party===pa)&&(!st||m.state===st)&&(tf===""||String(m.tier)===tf)&&(!q||(m.name+" "+m.state+" "+((PATHS[m.state]||{}).n||NAMES[m.state]||"")).toLowerCase().indexOf(q)>-1)});
   r.sort(so==="name"?function(a,b){return a.name.localeCompare(b.name)}:so==="state"?function(a,b){return a.state.localeCompare(b.state)||a.name.localeCompare(b.name)}:function(a,b){return b.tier-a.tier||b.n-a.n||a.name.localeCompare(b.name)});
   $("count").textContent=r.length+" members";
   $("chip").innerHTML=st?'<button class="chipx" id="clr">'+esc(st)+" ✕</button>":"";
   $("rows").innerHTML=r.slice(0,shown).map(card).join("");
   var left=r.length-shown;$("more").hidden=left<=0;$("more").textContent="Show more ("+left+" remaining)";
 }
-function all(){shown=60;renderStats();renderMap();render()}
+function all(){shown=60;$("sta").value=st;renderStats();renderMap();render()}
 document.addEventListener("click",function(e){
+  var tb=e.target.closest("[data-p]");if(tb){["p1","p2","p3"].forEach(function(id){$(id).hidden=id!==tb.dataset.p});document.querySelectorAll(".tabs button").forEach(function(b){b.classList.toggle("on",b===tb)});return}
   var t=e.target.closest("[data-s]");if(t){if(!t.classList.contains("none")){st=st===t.dataset.s?"":t.dataset.s;all()}return}
   t=e.target.closest("[data-t]");if(t){tf=tf===t.dataset.t?"":t.dataset.t;all();return}
   if(e.target.closest("#clr")){st="";all();return}
@@ -158,6 +179,8 @@ document.addEventListener("click",function(e){
 document.addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("tr.m")){e.preventDefault();e.target.click()}});
 ["q","ch","pa","so"].forEach(function(i){$(i).addEventListener("input",function(){shown=60;render()})});
 document.addEventListener("error",function(e){if(e.target.tagName==="IMG")e.target.style.display="none"},true);
+(function(){var o=Object.keys(PATHS).concat(["PR","GU","VI","AS","MP"]).sort();$("sta").innerHTML='<option value="">All states</option>'+o.map(function(a){return'<option value="'+a+'">'+(PATHS[a]?PATHS[a].n:NAMES[a])+" ("+a+")</option>"}).join("")})();
+$("sta").addEventListener("change",function(){st=this.value;all()});
 all();
 </script>
 </body>
